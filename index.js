@@ -34,8 +34,12 @@ async function run() {
       if (status) {
         query.status = status;
       }
+      // if (assignee) {
+      //   query.assignee = assignee;
+      // }
       if (assignee) {
-        query.assignee = assignee;
+        const pattern = new RegExp(assignee, "i");
+        query.assignee = { $regex: pattern };
       }
 
       if (priority) {
@@ -63,6 +67,17 @@ async function run() {
       const newTask = req.body;
       const result = await tasksCollections.insertOne(newTask);
       res.send(result);
+    });
+
+    app.get("/tasks/completed/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await tasksCollections.findOne(query);
+      if (result.status === "Completed") {
+        res.send({ isCompleted: true });
+      } else {
+        res.send({ isCompleted: false });
+      }
     });
 
     app.patch("/tasks/:id", async (req, res) => {
