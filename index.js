@@ -32,16 +32,21 @@ async function run() {
       console.log(req.query);
       let query = {};
       if (status) {
-        query = { status: status };
+        query.status = status;
       }
-      if (assignee || priority || start_date || end_date) {
-        query = {
-          status: status,
-          assignee: assignee,
-          priority: priority,
-          start_date: start_date,
-          end_date: end_date,
-        };
+      if (assignee) {
+        query.assignee = assignee;
+      }
+
+      if (priority) {
+        query.priority = priority;
+      }
+
+      if (start_date) {
+        query.start_date = start_date;
+      }
+      if (end_date) {
+        query.end_date = end_date;
       }
       const result = await tasksCollections.find(query).toArray();
       res.send(result);
